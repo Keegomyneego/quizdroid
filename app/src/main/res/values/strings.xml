@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">QuizDroid</string>
+
+    <!-- Activity Titles -->
+    <string name="title_activity_topic_overview">TopicOverviewActivity</string>
+
+    <!-- Text -->
+    <string name="submit_text">Submit</string>
 </resources>

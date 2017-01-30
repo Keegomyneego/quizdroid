@@ -4,14 +4,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import edu.washington.ksf7.quizdroid.Adapters.SimpleStringListAdapter;
-import edu.washington.ksf7.quizdroid.Models.MultipleChoiceQuestion;
-import edu.washington.ksf7.quizdroid.Models.Quiz;
+import edu.washington.ksf7.quizdroid.Adapters.MasterDetailAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -41,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         topicListView.setLayoutManager(layoutManager);
 
         // Create the adapter
-        RecyclerView.Adapter adapter = new SimpleStringListAdapter(Data.quizTopics, R.layout.quiz_topic_card, R.id.topic);
+        RecyclerView.Adapter adapter = new MasterDetailAdapter(this, Data.quizTopics, R.layout.quiz_topic_card, R.id.topic);
         topicListView.setAdapter(adapter);
     }
 
