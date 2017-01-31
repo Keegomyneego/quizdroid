@@ -3,6 +3,6 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="quiz_topic_title_size">16sp</dimen>
-    <dimen name="quiz_topic_card_min_height">64dp</dimen>
+    <dimen name="quiz_topic_title_size">24sp</dimen>
+    <dimen name="quiz_topic_card_min_height">96dp</dimen>
 </resources>

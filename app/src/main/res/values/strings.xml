@@ -5,5 +5,9 @@
     <string name="title_activity_topic_overview">TopicOverviewActivity</string>
 
     <!-- Text -->
+    <string name="selected_answer_text">Your answer:</string>
+    <string name="correct_answer_text">Correct answer:</string>
+    <string name="begin_text">Begin</string>
+    <string name="finish_text">Finish</string>
     <string name="submit_text">Submit</string>
 </resources>

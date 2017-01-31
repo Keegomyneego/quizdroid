@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import edu.washington.ksf7.quizdroid.Controllers.MasterDetailController;
 import edu.washington.ksf7.quizdroid.TopicOverviewActivity;
 
 /**
@@ -56,7 +57,7 @@ public class MasterDetailAdapter extends RecyclerView.Adapter<MasterDetailAdapte
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, TopicOverviewActivity.class);
-                intent.putExtra("position", position);
+                MasterDetailController.setDetailPosition(intent, position);
                 context.startActivity(intent);
             }
         });

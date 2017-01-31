@@ -12,10 +12,13 @@ import edu.washington.ksf7.quizdroid.Models.Quiz;
 
 class Data {
 
-    static List<Quiz> quizzes = new ArrayList<>();
-    static List<String> quizTopics = new ArrayList<>();
+    static List<Quiz> quizzes;
+    static List<String> quizTopics;
 
     static void loadQuizzes() {
+        quizzes = new ArrayList<>();
+        quizTopics = new ArrayList<>();
+
         addQuiz(new Quiz("Math", new MultipleChoiceQuestion[] {
                 new MultipleChoiceQuestion("What is the answer?", new String[] {
                         "Its definitely A",

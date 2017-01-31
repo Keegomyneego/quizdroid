@@ -10,8 +10,8 @@ import java.util.List;
 
 public class Quiz {
 
-    String topic;
-    List<MultipleChoiceQuestion> questions;
+    private final String topic;
+    private final List<MultipleChoiceQuestion> questions;
 
     public Quiz(String topic, MultipleChoiceQuestion[] questions) {
         this.topic = topic;

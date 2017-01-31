@@ -6,9 +6,9 @@ package edu.washington.ksf7.quizdroid.Models;
 
 public class MultipleChoiceQuestion {
 
-    String question;
-    String[] possibleAnswers;
-    int indexOfCorrectAnswer;
+    public String question;
+    public String[] possibleAnswers;
+    public int indexOfCorrectAnswer;
 
     public MultipleChoiceQuestion(String question, String[] possibleAnswers, int indexOfCorrectAnswer) {
         this.question = question;
