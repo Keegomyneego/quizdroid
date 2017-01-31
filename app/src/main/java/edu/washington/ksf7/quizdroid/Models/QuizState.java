@@ -79,7 +79,7 @@ public class QuizState {
     }
 
     public void guessAnswer(int index) {
-        if (index < numberOfQuestions) {
+        if (index < getCurrentQuestion().possibleAnswers.length) {
             guesses[currentQuestionNumber] = index;
         }
     }
