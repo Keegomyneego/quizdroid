@@ -25,7 +25,13 @@ class Data {
                         "It must be B",
                         "Certainly not C",
                         "Bruh, its D"
-                }, 0)
+                }, 0),
+                new MultipleChoiceQuestion("What is the answer?", new String[] {
+                        "Its definitely A",
+                        "It must be B",
+                        "Certainly not C",
+                        "Bruh, its D"
+                }, 1)
         }));
 
         addQuiz(new Quiz("Physics", new MultipleChoiceQuestion[] {

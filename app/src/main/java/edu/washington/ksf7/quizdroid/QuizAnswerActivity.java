@@ -3,13 +3,10 @@ package edu.washington.ksf7.quizdroid;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import edu.washington.ksf7.quizdroid.Models.MultipleChoiceQuestion;
-import edu.washington.ksf7.quizdroid.Models.Quiz;
 import edu.washington.ksf7.quizdroid.Models.QuizState;
 
 public class QuizAnswerActivity extends AppCompatActivity {
@@ -55,7 +52,7 @@ public class QuizAnswerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 QuizState.currentState.moveToNextQuestion();
                 Intent intent = new Intent(QuizAnswerActivity.this, isLastQuestion
-                        ? MainActivity.class
+                        ? TopicListActivity.class
                         : QuizQuestionActivity.class
                 );
                 startActivity(intent);

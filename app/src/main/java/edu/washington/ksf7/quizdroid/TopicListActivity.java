@@ -7,14 +7,14 @@ import android.support.v7.widget.RecyclerView;
 
 import edu.washington.ksf7.quizdroid.Adapters.MasterDetailAdapter;
 
-public class MainActivity extends AppCompatActivity {
+public class TopicListActivity extends AppCompatActivity {
 
     RecyclerView topicListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_topic_list);
 
         // Load all the quiz data
         Data.loadQuizzes();
