@@ -5,7 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
-import edu.washington.ksf7.quizdroid.Adapters.MasterDetailAdapter;
+import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
 
 public class TopicListActivity extends AppCompatActivity {
 
@@ -35,7 +35,7 @@ public class TopicListActivity extends AppCompatActivity {
         topicListView.setLayoutManager(layoutManager);
 
         // Create the adapter
-        RecyclerView.Adapter adapter = new MasterDetailAdapter(this, Data.quizTopics, R.layout.quiz_topic_card, R.id.topic);
+        RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, Data.quizTopics, QuizActivity.class, R.layout.quiz_topic_card, R.id.topic);
         topicListView.setAdapter(adapter);
     }
 

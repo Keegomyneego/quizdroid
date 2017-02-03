@@ -20,7 +20,8 @@
             android:label="@string/title_activity_topic_overview"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".QuizQuestionActivity" />
-        <activity android:name=".QuizAnswerActivity"></activity>
+        <activity android:name=".QuizAnswerActivity" />
+        <activity android:name=".QuizActivity"></activity>
     </application>
 
 </manifest>
