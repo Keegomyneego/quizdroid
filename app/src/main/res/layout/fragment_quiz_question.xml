@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.washington.ksf7.quizdroid.QuizQuestionFragment">
+    tools:context="edu.washington.ksf7.quizdroid.Fragments.QuizQuestionFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

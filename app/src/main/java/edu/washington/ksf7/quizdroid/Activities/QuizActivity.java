@@ -1,10 +1,13 @@
-package edu.washington.ksf7.quizdroid;
+package edu.washington.ksf7.quizdroid.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
+import edu.washington.ksf7.quizdroid.Data;
 import edu.washington.ksf7.quizdroid.Models.Quiz;
+import edu.washington.ksf7.quizdroid.R;
+import edu.washington.ksf7.quizdroid.Fragments.TopicOverviewFragment;
 
 public class QuizActivity extends AppCompatActivity {
 
@@ -21,7 +24,7 @@ public class QuizActivity extends AppCompatActivity {
         int position = MasterDetailView.Controller.getDetailPosition(getIntent());
 
         // Get data
-        quiz = Data.quizzes.get(position);
+        quiz = Data.getQuiz(position);
 
         // Put data into bundle for fragment
         Bundle bundle = new Bundle();

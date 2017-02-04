@@ -1,11 +1,14 @@
-package edu.washington.ksf7.quizdroid;
+package edu.washington.ksf7.quizdroid.Activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import edu.washington.ksf7.quizdroid.Activities.QuizActivity;
 import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
+import edu.washington.ksf7.quizdroid.Data;
+import edu.washington.ksf7.quizdroid.R;
 
 public class TopicListActivity extends AppCompatActivity {
 

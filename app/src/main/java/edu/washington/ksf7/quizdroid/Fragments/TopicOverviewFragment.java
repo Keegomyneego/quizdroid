@@ -1,4 +1,4 @@
-package edu.washington.ksf7.quizdroid;
+package edu.washington.ksf7.quizdroid.Fragments;
 
 
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import edu.washington.ksf7.quizdroid.Models.QuizState;
+import edu.washington.ksf7.quizdroid.R;
 
 /**
  * A simple {@link Fragment} subclass.

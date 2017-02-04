@@ -10,12 +10,12 @@ import edu.washington.ksf7.quizdroid.Models.Quiz;
  * Created by keegomyneego on 1/30/17.
  */
 
-class Data {
+public class Data {
 
-    static List<Quiz> quizzes;
-    static List<String> quizTopics;
+    private static List<Quiz> quizzes;
+    private static List<String> quizTopics;
 
-    static void loadQuizzes() {
+    public static void loadQuizzes() {
         quizzes = new ArrayList<>();
         quizTopics = new ArrayList<>();
 
@@ -51,6 +51,14 @@ class Data {
                         "Bruh, its D"
                 }, 0)
         }));
+    }
+
+    public static Quiz getQuiz(int index) {
+        return quizzes.get(index);
+    }
+
+    public static List<String> getTopics() {
+        return quizTopics;
     }
 
     //
