@@ -1,5 +1,6 @@
 package edu.washington.ksf7.quizdroid.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +15,20 @@ import edu.washington.ksf7.quizdroid.Fragments.TopicOverviewFragment;
 
 public class QuizActivity extends AppCompatActivity implements TopicOverviewFragment.Listener, QuizQuestionFragment.Listener {
 
-    private final String TAG = "QuizActivity";
+    final static String TAG = "QuizActivity";
+
+    //----------------------------------------------------------------------------------------------
+    // Client Interface
+    //----------------------------------------------------------------------------------------------
+
+    public static void putArguments(Intent intent, int quizNumber) {
+        intent.putExtra("quizNumber", quizNumber);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // Implementation
+    //----------------------------------------------------------------------------------------------
+
     private Quiz quiz;
     private int quizNumber;
 
@@ -23,9 +37,12 @@ public class QuizActivity extends AppCompatActivity implements TopicOverviewFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        // This is a detail in a Master-Detail setup,
-        // get this detail activity's index in the master list
-        quizNumber = MasterDetailView.Controller.getDetailPosition(getIntent());
+        // Get arguments from intent
+        Intent intent = getIntent();
+        quizNumber = intent.getIntExtra("quizNumber", -1);
+        if (quizNumber == -1) {
+            Log.e(TAG, "Arguments not properly put into intent");
+        }
 
         // Get data for my fragments
         quiz = Data.getQuiz(quizNumber);

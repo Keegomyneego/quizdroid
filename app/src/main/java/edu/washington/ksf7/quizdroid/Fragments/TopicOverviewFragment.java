@@ -75,7 +75,7 @@ public class TopicOverviewFragment extends Fragment {
                 try {
                     ((Listener) getActivity()).onBeginButtonClicked(view);
                 } catch (ClassCastException e) {
-                    Log.e(TAG, "Parent activity does not implement Listener class");
+                    Log.w(TAG, "Parent activity does not implement Listener class");
                 }
             }
         });

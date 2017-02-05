@@ -105,7 +105,7 @@ public class QuizQuestionFragment extends Fragment {
                 try {
                     ((Listener) getActivity()).onSubmitAnswerClicked(view, currentGuess);
                 } catch (ClassCastException e) {
-                    Log.e(TAG, "Parent activity does not implement Listener class");
+                    Log.w(TAG, "Parent activity does not implement Listener class");
                 }
             }
         });

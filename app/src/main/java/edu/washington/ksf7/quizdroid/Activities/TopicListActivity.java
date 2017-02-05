@@ -1,16 +1,18 @@
 package edu.washington.ksf7.quizdroid.Activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import edu.washington.ksf7.quizdroid.Activities.QuizActivity;
 import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
 import edu.washington.ksf7.quizdroid.Data;
 import edu.washington.ksf7.quizdroid.R;
 
-public class TopicListActivity extends AppCompatActivity {
+public class TopicListActivity extends AppCompatActivity implements MasterDetailView.Listener {
 
     RecyclerView topicListView;
 
@@ -38,9 +40,14 @@ public class TopicListActivity extends AppCompatActivity {
         topicListView.setLayoutManager(layoutManager);
 
         // Create the adapter
-        RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, Data.getTopics(), QuizActivity.class, R.layout.quiz_topic_card, R.id.topic);
+        RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, Data.getTopics(), R.layout.quiz_topic_card, R.id.topic);
         topicListView.setAdapter(adapter);
     }
 
-
+    public void onDetailViewClicked(View view, int position) {
+        // Launch the quiz activity
+        Intent intent = new Intent(this, QuizActivity.class);
+        QuizActivity.putArguments(intent, position);
+        startActivity(intent);
+    }
 }
