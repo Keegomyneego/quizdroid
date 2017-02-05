@@ -28,7 +28,7 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
         initializeTopicList();
     }
 
-    protected void initializeTopicList() {
+    private void initializeTopicList() {
         // Get the recycler
         topicListView = (RecyclerView) findViewById(R.id.topic_list);
 
@@ -43,6 +43,10 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
         RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, Data.getTopics(), R.layout.quiz_topic_card, R.id.topic);
         topicListView.setAdapter(adapter);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // MasterDetailView.Listener Implementation
+    //----------------------------------------------------------------------------------------------
 
     public void onDetailViewClicked(View view, int position) {
         // Launch the quiz activity

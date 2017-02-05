@@ -34,7 +34,7 @@ public class TopicOverviewFragment extends Fragment {
     }
 
     public interface Listener {
-        void onBeginButtonClicked(View view);
+        void onBeginClicked(View view);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -73,7 +73,7 @@ public class TopicOverviewFragment extends Fragment {
             public void onClick(View view) {
                 // Delegate click logic to parent activity
                 try {
-                    ((Listener) getActivity()).onBeginButtonClicked(view);
+                    ((Listener) getActivity()).onBeginClicked(view);
                 } catch (ClassCastException e) {
                     Log.w(TAG, "Parent activity does not implement Listener class");
                 }

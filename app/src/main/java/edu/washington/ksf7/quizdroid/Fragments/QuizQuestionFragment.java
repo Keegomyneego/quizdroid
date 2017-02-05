@@ -41,7 +41,7 @@ public class QuizQuestionFragment extends Fragment {
     }
 
     public interface Listener {
-        void onSubmitAnswerClicked(View view, int answerNumber);
+        void onSubmitAnswerClicked(View view, int guess);
     }
 
     //----------------------------------------------------------------------------------------------

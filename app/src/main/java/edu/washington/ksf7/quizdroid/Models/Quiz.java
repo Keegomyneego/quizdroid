@@ -18,11 +18,31 @@ public class Quiz {
         this.questions = new ArrayList<>(Arrays.asList(questions));
     }
 
+    // Getters
+
     public String getTopic() {
         return topic;
     }
 
     public List<MultipleChoiceQuestion> getQuestions() {
         return questions;
+    }
+
+    public String getPossibleAnswer(int questionNumber, int answerNumber) {
+        return questions.get(questionNumber).possibleAnswers[answerNumber];
+    }
+
+    public String getCorrectAnswer(int questionNumber) {
+        MultipleChoiceQuestion question = questions.get(questionNumber);
+
+        return question.possibleAnswers[question.indexOfCorrectAnswer];
+    }
+
+    // Methods
+
+    public boolean guessIsCorrect(int questionNumber, int guess) {
+        int correctAnswer = questions.get(questionNumber).indexOfCorrectAnswer;
+
+        return guess == correctAnswer;
     }
 }
