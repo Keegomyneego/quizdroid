@@ -1,16 +1,14 @@
 package edu.washington.ksf7.quizdroid.Fragments;
 
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import edu.washington.ksf7.quizdroid.Models.QuizState;
 import edu.washington.ksf7.quizdroid.R;
 
 /**
@@ -18,10 +16,30 @@ import edu.washington.ksf7.quizdroid.R;
  */
 public class TopicOverviewFragment extends Fragment {
 
+    static final String TAG = "TopicOverviewFragment";
+
+    //----------------------------------------------------------------------------------------------
+    // Client Interface
+    //----------------------------------------------------------------------------------------------
 
     public TopicOverviewFragment() {
         // Required empty public constructor
     }
+
+    public void setArguments(String topicTitle, int questionCount) {
+        Bundle bundle = new Bundle();
+        bundle.putString("topicTitle", topicTitle);
+        bundle.putInt("questionCount", questionCount);
+        setArguments(bundle);
+    }
+
+    public interface Listener {
+        void onBeginButtonClicked(View view);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // Implementation
+    //----------------------------------------------------------------------------------------------
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -35,31 +53,30 @@ public class TopicOverviewFragment extends Fragment {
         int questionCount = bundle.getInt("questionCount", -1);
 
         // Customize views with argument data
-        setTopicInfo(mainView, topicTitle, questionCount);
-        addEventListeners(mainView);
+        setViewData(mainView, topicTitle, questionCount);
 
         return mainView;
     }
 
-    private void setTopicInfo(View mainView, String title, int questionCount) {
+    private void setViewData(View mainView, String title, int questionCount) {
+        // TextViews
         String description = questionCount == 1
                 ? "There is " + questionCount + " question in this topic"
                 : "There are " + questionCount + " questions in this topic";
 
         ((TextView) mainView.findViewById(R.id.topic_title)).setText(title);
         ((TextView) mainView.findViewById(R.id.description)).setText(description);
-    }
 
-    private void addEventListeners(View mainView) {
+        // Buttons
         mainView.findViewById(R.id.begin_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                // TODO transition to next fragment
-
-//                Intent intent = new Intent(TopicOverviewActivity.this, QuizQuestionActivity.class);
-//                QuizState.startQuiz(quiz);
-//                startActivity(intent);
+                // Delegate click logic to parent activity
+                try {
+                    ((Listener) getActivity()).onBeginButtonClicked(view);
+                } catch (ClassCastException e) {
+                    Log.e(TAG, "Parent activity does not implement Listener class");
+                }
             }
         });
     }

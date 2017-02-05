@@ -38,7 +38,7 @@ public class TopicListActivity extends AppCompatActivity {
         topicListView.setLayoutManager(layoutManager);
 
         // Create the adapter
-        RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, Data.quizTopics, QuizActivity.class, R.layout.quiz_topic_card, R.id.topic);
+        RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, Data.getTopics(), QuizActivity.class, R.layout.quiz_topic_card, R.id.topic);
         topicListView.setAdapter(adapter);
     }
 
