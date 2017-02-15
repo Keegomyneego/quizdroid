@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import edu.washington.ksf7.quizdroid.Activities.QuizActivity;
 import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
 import edu.washington.ksf7.quizdroid.Data;
 import edu.washington.ksf7.quizdroid.R;

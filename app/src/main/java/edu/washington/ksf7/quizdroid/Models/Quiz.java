@@ -11,9 +11,9 @@ import java.util.List;
 public class Quiz {
 
     private final String topic;
-    private final List<MultipleChoiceQuestion> questions;
+    private final List<Question> questions;
 
-    public Quiz(String topic, MultipleChoiceQuestion[] questions) {
+    public Quiz(String topic, Question[] questions) {
         this.topic = topic;
         this.questions = new ArrayList<>(Arrays.asList(questions));
     }
@@ -24,7 +24,7 @@ public class Quiz {
         return topic;
     }
 
-    public List<MultipleChoiceQuestion> getQuestions() {
+    public List<Question> getQuestions() {
         return questions;
     }
 
@@ -33,7 +33,7 @@ public class Quiz {
     }
 
     public String getCorrectAnswer(int questionNumber) {
-        MultipleChoiceQuestion question = questions.get(questionNumber);
+        Question question = questions.get(questionNumber);
 
         return question.possibleAnswers[question.indexOfCorrectAnswer];
     }

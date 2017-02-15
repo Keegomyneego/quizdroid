@@ -3,7 +3,7 @@ package edu.washington.ksf7.quizdroid;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.washington.ksf7.quizdroid.Models.MultipleChoiceQuestion;
+import edu.washington.ksf7.quizdroid.Models.Question;
 import edu.washington.ksf7.quizdroid.Models.Quiz;
 
 /**
@@ -19,14 +19,14 @@ public class Data {
         quizzes = new ArrayList<>();
         quizTopics = new ArrayList<>();
 
-        addQuiz(new Quiz("Math", new MultipleChoiceQuestion[] {
-                new MultipleChoiceQuestion("What is the answer?", new String[] {
+        addQuiz(new Quiz("Math", new Question[] {
+                new Question("What is the answer?", new String[] {
                         "Its definitely A",
                         "It must be B",
                         "Certainly not C",
                         "Bruh, its D"
                 }, 0),
-                new MultipleChoiceQuestion("What is the answer?", new String[] {
+                new Question("What is the answer?", new String[] {
                         "Its definitely A",
                         "It must be B",
                         "Certainly not C",
@@ -34,8 +34,8 @@ public class Data {
                 }, 1)
         }));
 
-        addQuiz(new Quiz("Physics", new MultipleChoiceQuestion[] {
-                new MultipleChoiceQuestion("What is the answer?", new String[] {
+        addQuiz(new Quiz("Physics", new Question[] {
+                new Question("What is the answer?", new String[] {
                         "Its definitely A",
                         "It must be B",
                         "Certainly not C",
@@ -43,8 +43,8 @@ public class Data {
                 }, 0)
         }));
 
-        addQuiz(new Quiz("Marvel Super Heroes", new MultipleChoiceQuestion[] {
-                new MultipleChoiceQuestion("What is the answer?", new String[] {
+        addQuiz(new Quiz("Marvel Super Heroes", new Question[] {
+                new Question("What is the answer?", new String[] {
                         "Its definitely A",
                         "It must be B",
                         "Certainly not C",

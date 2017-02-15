@@ -1,7 +1,6 @@
 package edu.washington.ksf7.quizdroid.Fragments;
 
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -13,7 +12,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import edu.washington.ksf7.quizdroid.Data;
-import edu.washington.ksf7.quizdroid.Models.MultipleChoiceQuestion;
+import edu.washington.ksf7.quizdroid.Models.Question;
 import edu.washington.ksf7.quizdroid.Models.Quiz;
 import edu.washington.ksf7.quizdroid.R;
 
@@ -62,7 +61,7 @@ public class QuizQuestionFragment extends Fragment {
         int questionNumber = bundle.getInt("questionNumber", -1);
 
         Quiz currentQuiz = Data.getQuiz(quizNumber);
-        MultipleChoiceQuestion currentQuestion = currentQuiz.getQuestions().get(questionNumber);
+        Question currentQuestion = currentQuiz.getQuestions().get(questionNumber);
 
         // Customize views with argument data
         setViewData(mainView, currentQuestion);
@@ -70,7 +69,7 @@ public class QuizQuestionFragment extends Fragment {
         return mainView;
     }
 
-    private void setViewData(final View mainView, final MultipleChoiceQuestion currentQuestion) {
+    private void setViewData(final View mainView, final Question currentQuestion) {
 
         // Set the question text
         ((TextView) mainView.findViewById(R.id.question_text)).setText(currentQuestion.question);
