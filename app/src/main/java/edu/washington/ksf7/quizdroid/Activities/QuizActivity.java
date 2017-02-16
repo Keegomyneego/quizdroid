@@ -6,11 +6,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
-import edu.washington.ksf7.quizdroid.Data;
 import edu.washington.ksf7.quizdroid.Fragments.QuizAnswerFragment;
 import edu.washington.ksf7.quizdroid.Fragments.QuizQuestionFragment;
-import edu.washington.ksf7.quizdroid.Models.Quiz;
+import edu.washington.ksf7.quizdroid.Models.Topic;
+import edu.washington.ksf7.quizdroid.QuizApp;
 import edu.washington.ksf7.quizdroid.R;
 import edu.washington.ksf7.quizdroid.Fragments.TopicOverviewFragment;
 
@@ -23,18 +22,21 @@ public class QuizActivity extends AppCompatActivity implements TopicOverviewFrag
     //----------------------------------------------------------------------------------------------
 
     public static void putArguments(Intent intent, int quizNumber) {
-        intent.putExtra("quizNumber", quizNumber);
+        intent.putExtra("topicNumber", quizNumber);
     }
 
     //----------------------------------------------------------------------------------------------
     // Implementation
     //----------------------------------------------------------------------------------------------
 
-    private Quiz quiz;
-    private int quizNumber;
+    // Quiz Config
+    private Topic topic;
+    private int topicNumber;
+    private int questionCount;
+
+    // Quiz State
     private int currentQuestion;
     private int score;
-    private int questionCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,21 +45,22 @@ public class QuizActivity extends AppCompatActivity implements TopicOverviewFrag
 
         // Get arguments from intent
         Intent intent = getIntent();
-        quizNumber = intent.getIntExtra("quizNumber", -1);
-        if (quizNumber == -1) {
+        topicNumber = intent.getIntExtra("topicNumber", -1);
+        if (topicNumber == -1) {
             Log.e(TAG, "Arguments not properly put into intent");
         }
 
-        // Initialize quiz data
-        quiz = Data.getQuiz(quizNumber);
-        questionCount = quiz.getQuestions().size();
+        // Initialize topic data
+        topic = QuizApp.getInstance().getTopicRepository().getTopic(topicNumber);
+        questionCount = topic.questions.length;
 
         // Get data for initial fragment
-        String topicTitle = quiz.getTopic();
+        String topicTitle = topic.title;
+        String topicDescription = topic.shortDescription;
 
         // Load in the topic overview fragment
         TopicOverviewFragment topicOverviewFragment = new TopicOverviewFragment();
-        topicOverviewFragment.setArguments(topicTitle, questionCount);
+        topicOverviewFragment.setArguments(topicTitle, topicDescription, questionCount);
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.quiz_fragment_frame, topicOverviewFragment)
@@ -70,11 +73,11 @@ public class QuizActivity extends AppCompatActivity implements TopicOverviewFrag
 
     public void onBeginClicked(View view) {
         // Start from the beginning
-        currentQuestion = 0;
+        resetQuizState();
 
-        // Transition to taking the first question in the quiz
+        // Transition to taking the first question in the topic
         QuizQuestionFragment quizQuestionFragment = new QuizQuestionFragment();
-        quizQuestionFragment.setArguments(quizNumber, currentQuestion);
+        quizQuestionFragment.setArguments(topicNumber, currentQuestion);
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.quiz_fragment_frame, quizQuestionFragment)
@@ -83,9 +86,9 @@ public class QuizActivity extends AppCompatActivity implements TopicOverviewFrag
 
     public void onSubmitAnswerClicked(View view, int guess) {
         // Calculate results
-        String selectedAnswer = quiz.getPossibleAnswer(currentQuestion, guess);
-        String correctAnswer = quiz.getCorrectAnswer(currentQuestion);
-        score += quiz.guessIsCorrect(currentQuestion, guess) ? 1 : 0;
+        String selectedAnswer = topic.getPossibleAnswer(currentQuestion, guess);
+        String correctAnswer = topic.getCorrectAnswer(currentQuestion);
+        score += topic.guessIsCorrect(currentQuestion, guess) ? 1 : 0;
         int questionsAnswered = currentQuestion + 1;
         boolean isLastQuestion = questionsAnswered >= questionCount;
         
@@ -109,11 +112,16 @@ public class QuizActivity extends AppCompatActivity implements TopicOverviewFrag
         } else {
             // Transition to the next question
             QuizQuestionFragment quizQuestionFragment = new QuizQuestionFragment();
-            quizQuestionFragment.setArguments(quizNumber, currentQuestion);
+            quizQuestionFragment.setArguments(topicNumber, currentQuestion);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.quiz_fragment_frame, quizQuestionFragment)
                     .commit();
         }
+    }
+
+    private void resetQuizState() {
+        currentQuestion = 0;
+        score = 0;
     }
 }

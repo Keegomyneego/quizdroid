@@ -5,6 +5,8 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.List;
+
 /**
  * Created by keegomyneego on 2/15/17.
  */
@@ -55,5 +57,29 @@ public class Topic {
         this.shortDescription = parsedShortDescription;
         this.longDescription = parsedLongDescription;
         this.questions = parsedQuestions;
+    }
+
+    // Getters
+
+    public Question[] getQuestions() {
+        return questions;
+    }
+
+    public String getPossibleAnswer(int questionNumber, int answerNumber) {
+        return questions[questionNumber].possibleAnswers[answerNumber];
+    }
+
+    public String getCorrectAnswer(int questionNumber) {
+        Question question = questions[questionNumber];
+
+        return question.possibleAnswers[question.indexOfCorrectAnswer];
+    }
+
+    // Methods
+
+    public boolean guessIsCorrect(int questionNumber, int guess) {
+        int correctAnswer = questions[questionNumber].indexOfCorrectAnswer;
+
+        return guess == correctAnswer;
     }
 }

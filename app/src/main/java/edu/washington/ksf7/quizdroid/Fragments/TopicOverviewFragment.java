@@ -26,9 +26,10 @@ public class TopicOverviewFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void setArguments(String topicTitle, int questionCount) {
+    public void setArguments(String topicTitle, String topicDescription, int questionCount) {
         Bundle bundle = new Bundle();
         bundle.putString("topicTitle", topicTitle);
+        bundle.putString("topicDescription", topicDescription);
         bundle.putInt("questionCount", questionCount);
         setArguments(bundle);
     }
@@ -50,22 +51,19 @@ public class TopicOverviewFragment extends Fragment {
         // Extract argument data
         Bundle bundle = getArguments();
         String topicTitle = bundle.getString("topicTitle");
+        String topicDescription = bundle.getString("topicDescription");
         int questionCount = bundle.getInt("questionCount", -1);
 
         // Customize views with argument data
-        setViewData(mainView, topicTitle, questionCount);
+        setViewData(mainView, topicTitle, topicDescription, questionCount);
 
         return mainView;
     }
 
-    private void setViewData(View mainView, String title, int questionCount) {
+    private void setViewData(View mainView, String title, String description, int questionCount) {
         // TextViews
-        String description = questionCount == 1
-                ? "There is " + questionCount + " question in this topic"
-                : "There are " + questionCount + " questions in this topic";
-
         ((TextView) mainView.findViewById(R.id.topic_title)).setText(title);
-        ((TextView) mainView.findViewById(R.id.description)).setText(description);
+        ((TextView) mainView.findViewById(R.id.topic_description)).setText(description);
 
         // Buttons
         mainView.findViewById(R.id.begin_button).setOnClickListener(new View.OnClickListener() {

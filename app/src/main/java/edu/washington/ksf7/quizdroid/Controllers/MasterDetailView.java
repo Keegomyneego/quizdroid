@@ -33,42 +33,50 @@ public class MasterDetailView {
     public static class Adapter extends RecyclerView.Adapter<MasterDetailView.Adapter.ViewHolder> {
 
         private Listener listener;
-        private List<String> itemText;
+        private String[] itemTitleText;
+        private String[] itemDescriptionText;
         private int itemLayout;
-        private int textViewId;
+        private int titleTextViewId;
+        private int descriptionTextViewId;
 
         /**
          * Custom view holder for this adapter
          */
         public static class ViewHolder extends RecyclerView.ViewHolder {
-            public TextView textView;
+            public TextView titleTextView;
+            public TextView descriptionTextView;
 
-            public ViewHolder(View itemView, TextView textView) {
+            public ViewHolder(View itemView, TextView titleTextView, TextView descriptionTextView) {
                 super(itemView);
-                this.textView = textView;
+                this.titleTextView = titleTextView;
+                this.descriptionTextView = descriptionTextView;
             }
         }
 
-        public Adapter(Listener listener, List<String> itemText, int itemLayout, int textViewId) {
+        public Adapter(Listener listener, String[] itemTitleText, String[] itemDescriptionText, int itemLayout, int titleTextViewId, int descriptionTextViewId) {
             this.listener = listener;
-            this.itemText = itemText;
+            this.itemTitleText = itemTitleText;
+            this.itemDescriptionText = itemDescriptionText;
             this.itemLayout = itemLayout;
-            this.textViewId = textViewId;
+            this.titleTextViewId = titleTextViewId;
+            this.descriptionTextViewId = descriptionTextViewId;
         }
 
         @Override
         public MasterDetailView.Adapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(itemLayout, parent, false);
-            TextView textView = (TextView) itemView.findViewById(textViewId);
+            TextView titleTextView = (TextView) itemView.findViewById(titleTextViewId);
+            TextView descriptionTextView = (TextView) itemView.findViewById(descriptionTextViewId);
 
-            return new ViewHolder(itemView, textView);
+            return new ViewHolder(itemView, titleTextView, descriptionTextView);
         }
 
         @Override
         public void onBindViewHolder(MasterDetailView.Adapter.ViewHolder holder, final int position) {
             // Set the text for this cell based on its position
-            holder.textView.setText(itemText.get(position));
+            holder.titleTextView.setText(itemTitleText[position]);
+            holder.descriptionTextView.setText(itemDescriptionText[position]);
 
             // Set this cell's onClickListener
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +90,7 @@ public class MasterDetailView {
 
         @Override
         public int getItemCount() {
-            return itemText.size();
+            return itemTitleText.length;
         }
     }
 }

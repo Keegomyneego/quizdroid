@@ -8,7 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
-import edu.washington.ksf7.quizdroid.Data;
+import edu.washington.ksf7.quizdroid.Models.Topic;
+import edu.washington.ksf7.quizdroid.QuizApp;
 import edu.washington.ksf7.quizdroid.R;
 
 public class TopicListActivity extends AppCompatActivity implements MasterDetailView.Listener {
@@ -19,9 +20,6 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_list);
-
-        // Load all the quiz data
-        Data.loadQuizzes();
 
         // Bind the view to the data
         initializeTopicList();
@@ -38,8 +36,26 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         topicListView.setLayoutManager(layoutManager);
 
+        // Get the topic info to display
+        Topic[] topics = QuizApp.getInstance().getTopicRepository().getAllTopics();
+        String[] topicTitles;
+        String[] topicDescriptions;
+
+        if (topics == null) {
+            topicTitles = new String[0];
+            topicDescriptions = new String[0];
+        } else {
+            topicTitles = new String[topics.length];
+            topicDescriptions = new String[topics.length];
+
+            for (int i = 0; i < topics.length; i++) {
+                topicTitles[i] = topics[i].title;
+                topicDescriptions[i] = topics[i].shortDescription;
+            }
+        }
+
         // Create the adapter
-        RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, Data.getTopics(), R.layout.quiz_topic_card, R.id.topic);
+        RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, topicTitles, topicDescriptions, R.layout.quiz_topic_card, R.id.topic_title, R.id.topic_description);
         topicListView.setAdapter(adapter);
     }
 

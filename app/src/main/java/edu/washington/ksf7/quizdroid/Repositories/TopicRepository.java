@@ -6,12 +6,7 @@ import android.util.Log;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import edu.washington.ksf7.quizdroid.Data;
-import edu.washington.ksf7.quizdroid.Models.Question;
-import edu.washington.ksf7.quizdroid.Models.Quiz;
 import edu.washington.ksf7.quizdroid.Models.Topic;
 
 /**
@@ -56,8 +51,18 @@ public class TopicRepository {
         return instance;
     }
 
-    public Topic[] getTopics() {
+    @Nullable
+    public Topic[] getAllTopics() {
         return topics;
+    }
+
+    @Nullable
+    public Topic getTopic(int index) {
+        if (index >= topics.length) {
+            return null;
+        }
+
+        return topics[index];
     }
 
     //

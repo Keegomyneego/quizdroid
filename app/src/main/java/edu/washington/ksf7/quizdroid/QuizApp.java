@@ -17,6 +17,10 @@ public class QuizApp extends Application {
 
     private TopicRepository topicRepository;
 
+    public static QuizApp getInstance() {
+        return instance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -25,10 +29,6 @@ public class QuizApp extends Application {
 
         QuizApp.instance = this;
         this.topicRepository = TopicRepository.getInstance();
-    }
-
-    public QuizApp getInstance() {
-        return instance;
     }
 
     public TopicRepository getTopicRepository() {

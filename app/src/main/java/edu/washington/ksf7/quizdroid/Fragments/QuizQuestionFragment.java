@@ -11,9 +11,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import edu.washington.ksf7.quizdroid.Data;
 import edu.washington.ksf7.quizdroid.Models.Question;
-import edu.washington.ksf7.quizdroid.Models.Quiz;
+import edu.washington.ksf7.quizdroid.Models.Topic;
+import edu.washington.ksf7.quizdroid.QuizApp;
 import edu.washington.ksf7.quizdroid.R;
 
 
@@ -32,9 +32,9 @@ public class QuizQuestionFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public void setArguments(int quizNumber, int questionNumber) {
+    public void setArguments(int topicNumber, int questionNumber) {
         Bundle bundle = new Bundle();
-        bundle.putInt("quizNumber", quizNumber);
+        bundle.putInt("topicNumber", topicNumber);
         bundle.putInt("questionNumber", questionNumber);
         setArguments(bundle);
     }
@@ -57,11 +57,11 @@ public class QuizQuestionFragment extends Fragment {
 
         // Extract argument data
         Bundle bundle = getArguments();
-        int quizNumber = bundle.getInt("quizNumber", -1);
+        int topicNumber = bundle.getInt("topicNumber", -1);
         int questionNumber = bundle.getInt("questionNumber", -1);
 
-        Quiz currentQuiz = Data.getQuiz(quizNumber);
-        Question currentQuestion = currentQuiz.getQuestions().get(questionNumber);
+        Topic currentTopic = QuizApp.getInstance().getTopicRepository().getTopic(topicNumber);
+        Question currentQuestion = currentTopic.getQuestions()[questionNumber];
 
         // Customize views with argument data
         setViewData(mainView, currentQuestion);
