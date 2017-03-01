@@ -7,13 +7,7 @@
     android:layout_height="?attr/actionBarSize"
     android:background="?attr/colorPrimary"
     android:elevation="@dimen/app_bar_elevation"
-    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-    app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-    <TextView
-        style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse"
-        android:id="@+id/toolbar_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Dark">
 
 </android.support.v7.widget.Toolbar>
