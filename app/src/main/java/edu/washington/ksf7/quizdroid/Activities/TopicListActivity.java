@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
 import edu.washington.ksf7.quizdroid.Models.Topic;
@@ -21,8 +22,14 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_list);
 
+        initializeToolbar(getString(R.string.activity_topic_list_title));
+
         // Bind the view to the data
         initializeTopicList();
+    }
+
+    private void initializeToolbar(String title) {
+        ((TextView) findViewById(R.id.toolbar_title)).setText(title);
     }
 
     private void initializeTopicList() {

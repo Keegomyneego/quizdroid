@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import edu.washington.ksf7.quizdroid.Fragments.QuizAnswerFragment;
 import edu.washington.ksf7.quizdroid.Fragments.QuizQuestionFragment;
@@ -43,6 +44,8 @@ public class QuizActivity extends AppCompatActivity implements TopicOverviewFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
+        initializeToolbar(getString(R.string.activity_quiz_title));
+
         // Get arguments from intent
         Intent intent = getIntent();
         topicNumber = intent.getIntExtra("topicNumber", -1);
@@ -65,6 +68,10 @@ public class QuizActivity extends AppCompatActivity implements TopicOverviewFrag
                 .beginTransaction()
                 .add(R.id.quiz_fragment_frame, topicOverviewFragment)
                 .commit();
+    }
+
+    private void initializeToolbar(String title) {
+        ((TextView) findViewById(R.id.toolbar_title)).setText(title);
     }
 
     //----------------------------------------------------------------------------------------------
