@@ -17,7 +17,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activities.QuizActivity" />
-        <activity android:name=".Activities.PreferencesActivity"></activity>
+        <activity android:name=".Activities.PreferencesActivity" />
+
+        <receiver
+            android:name=".BroadcastReceivers.DownloadExecutor"
+            android:enabled="true"
+            android:exported="true"></receiver>
     </application>
 
 </manifest>
