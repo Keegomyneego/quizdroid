@@ -33,8 +33,8 @@ public class MasterDetailView {
     public static class Adapter extends RecyclerView.Adapter<MasterDetailView.Adapter.ViewHolder> {
 
         private Listener listener;
-        private String[] itemTitleText;
-        private String[] itemDescriptionText;
+        private List<String> itemTitleText;
+        private List<String> itemDescriptionText;
         private int itemLayout;
         private int titleTextViewId;
         private int descriptionTextViewId;
@@ -53,7 +53,7 @@ public class MasterDetailView {
             }
         }
 
-        public Adapter(Listener listener, String[] itemTitleText, String[] itemDescriptionText, int itemLayout, int titleTextViewId, int descriptionTextViewId) {
+        public Adapter(Listener listener, List<String> itemTitleText, List<String> itemDescriptionText, int itemLayout, int titleTextViewId, int descriptionTextViewId) {
             this.listener = listener;
             this.itemTitleText = itemTitleText;
             this.itemDescriptionText = itemDescriptionText;
@@ -75,8 +75,8 @@ public class MasterDetailView {
         @Override
         public void onBindViewHolder(MasterDetailView.Adapter.ViewHolder holder, final int position) {
             // Set the text for this cell based on its position
-            holder.titleTextView.setText(itemTitleText[position]);
-            holder.descriptionTextView.setText(itemDescriptionText[position]);
+            holder.titleTextView.setText(itemTitleText.get(position));
+            holder.descriptionTextView.setText(itemDescriptionText.get(position));
 
             // Set this cell's onClickListener
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +90,7 @@ public class MasterDetailView {
 
         @Override
         public int getItemCount() {
-            return itemTitleText.length;
+            return itemTitleText.size();
         }
     }
 }

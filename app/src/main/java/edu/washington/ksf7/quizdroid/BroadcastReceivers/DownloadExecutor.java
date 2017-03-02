@@ -1,120 +1,81 @@
 package edu.washington.ksf7.quizdroid.BroadcastReceivers;
 
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.widget.Toast;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DownloadExecutor extends BroadcastReceiver {
 
-    private static String TAG = "AWTYBroadcastReceiver";
-
+    private static String TAG = "DownloadExecutor";
 
     //----------------------------------------------------------------------------------------------
     // Client Interface
     //----------------------------------------------------------------------------------------------
 
+    public interface DownloadHandler {
+        void onDownloadComplete(Context context);
+    }
+
     public DownloadExecutor() {
+    }
+
+    public static PendingIntent getDownloadIntent(Context context, String url, DownloadHandler handler) {
+        Intent downloadIntent = new Intent(context, DownloadExecutor.class);
+        int callbackId = getNextHandlerId();
+        handlerMap.put(callbackId, handler);
+
+        downloadIntent.putExtra("url", url);
+        downloadIntent.putExtra("callbackId", callbackId);
+
+        return PendingIntent.getBroadcast(context, 0, downloadIntent, 0);
+    }
+
+    public static void downloadImmediately(Context context, String url, DownloadHandler handler) {
+
+        // Start the download
+        Toast.makeText(context, "Beginning download from " + url, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "Beginning download from " + url);
+
+        // Handle results
+        handler.onDownloadComplete(context);
     }
 
     //----------------------------------------------------------------------------------------------
     // Implementation
     //----------------------------------------------------------------------------------------------
 
-    private static ExecutionStatus executionStatus = ExecutionStatus.STOPPED;
-    private static AlarmManager alarmManager;
-    private static PendingIntent alarmIntent;
+    private static Map<Integer, DownloadHandler> handlerMap = new HashMap<>();
+    private static int nextHandlerId = 0;
+
+    private static int getNextHandlerId() {
+        nextHandlerId++;
+
+        return nextHandlerId - 1;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String phoneNumber = intent.getStringExtra("phoneNumber");
-        String message = intent.getStringExtra("message");
+        String url = intent.getStringExtra("url");
+        int callbackId = intent.getIntExtra("callbackId", -1);
+
+        // Get the appropriate download handler
+        DownloadHandler handler = handlerMap.get(callbackId);
+        if (handler == null) {
+            Toast.makeText(context, "Unable to find handler for url " + url, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Unable to find handler for url " + url + " and callbackId " + callbackId);
+            return;
+        }
 
         // Send sms message
-        sendSMS(context.getApplicationContext(), message, phoneNumber);
+//        sendSMS(context.getApplicationContext(), message, phoneNumber);
 
-        // Notify sender that it's been sent
-        Toast.makeText(context, "Texting " + phoneNumber + ": " + message, Toast.LENGTH_SHORT).show();
-
-        // Log that we sent it
-        Log.i(TAG, "Sending \"" + message + "\" to " + phoneNumber);
-    }
-
-    private void sendSMS(Context context, String message, String phoneNumber) {
-
-        // Listen to status broadcasts
-        String SENT = "SMS_SENT";
-        String DELIVERED = "SMS_DELIVERED";
-        context.registerReceiver(getSMSSentStatusReceiver(), new IntentFilter(SENT));
-        context.registerReceiver(getSMSDeliveredStatusReceiver(), new IntentFilter(DELIVERED));
-
-        // Send the message
-        SmsManager smsManager = SmsManager.getDefault();
-        PendingIntent sentPI = PendingIntent.getBroadcast(context, 0, new Intent(SENT), 0);
-        PendingIntent deliveredPI = PendingIntent.getBroadcast(context, 0, new Intent(DELIVERED), 0);
-        smsManager.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
-    }
-
-    // BroadcastReceivers
-
-    private BroadcastReceiver getSMSSentStatusReceiver() {
-        return new BroadcastReceiver() {
-
-            @Override
-            public void onReceive(Context msgContext, Intent msgIntent) {
-                String sentStatus = "";
-
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        sentStatus = "SMS sent";
-                        break;
-                    case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                        sentStatus = "Generic failure";
-                        break;
-                    case SmsManager.RESULT_ERROR_NO_SERVICE:
-                        sentStatus = "No service";
-                        break;
-                    case SmsManager.RESULT_ERROR_NULL_PDU:
-                        sentStatus = "Null PDU";
-                        break;
-                    case SmsManager.RESULT_ERROR_RADIO_OFF:
-                        sentStatus = "Radio off";
-                        break;
-                }
-
-                Toast.makeText(msgContext, sentStatus, Toast.LENGTH_SHORT).show();
-
-                // One time receiver, stop listening after first receive
-                msgContext.unregisterReceiver(this);
-            }
-        };
-    }
-
-    private BroadcastReceiver getSMSDeliveredStatusReceiver() {
-        return new BroadcastReceiver() {
-
-            @Override
-            public void onReceive(Context msgContext, Intent msgIntent) {
-                String deliveredStatus = "";
-
-                switch (getResultCode())
-                {
-                    case Activity.RESULT_OK:
-                        deliveredStatus = "SMS delivered";
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        deliveredStatus = "SMS not delivered";
-                        break;
-                }
-
-                Toast.makeText(msgContext, deliveredStatus, Toast.LENGTH_SHORT).show();
-
-                // One time receiver, stop listening after first receive
-                msgContext.unregisterReceiver(this);
-            }
-        };
+        // Start the download
+        downloadImmediately(context, url, handler);
     }
 }

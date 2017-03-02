@@ -7,11 +7,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import edu.washington.ksf7.quizdroid.R;
+import edu.washington.ksf7.quizdroid.Repositories.TopicRepository;
 
 public class PreferencesActivity extends AppCompatActivity {
-
-    public static String questionDataURL = "http://tednewardsandbox.site44.com/questions.json";
-    public static int questionDataRefreshRate = 5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,8 +20,8 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     private void initializeViewData() {
-        ((EditText) findViewById(R.id.question_data_url)).setText(questionDataURL);
-        ((EditText) findViewById(R.id.question_data_refresh_rate)).setText(String.valueOf(questionDataRefreshRate));
+        ((EditText) findViewById(R.id.question_data_url)).setText(TopicRepository.getQuestionDataURL());
+        ((EditText) findViewById(R.id.question_data_refresh_rate)).setText(String.valueOf(TopicRepository.getQuestionDataRefreshRate()));
 
         findViewById(R.id.save_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,8 +51,7 @@ public class PreferencesActivity extends AppCompatActivity {
         }
 
         // Update
-        questionDataURL = newQuestionDataURL;
-        questionDataRefreshRate = parsedRefreshRate;
+        TopicRepository.getInstance().setQuestionDataSettings(this, newQuestionDataURL, parsedRefreshRate);
 
         // Peace out
         finish();

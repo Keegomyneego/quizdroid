@@ -1,5 +1,6 @@
 package edu.washington.ksf7.quizdroid.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -7,24 +8,43 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import edu.washington.ksf7.quizdroid.BroadcastReceivers.DownloadExecutor;
+import edu.washington.ksf7.quizdroid.Controllers.DownloadManager;
 import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
 import edu.washington.ksf7.quizdroid.Models.Topic;
 import edu.washington.ksf7.quizdroid.QuizApp;
 import edu.washington.ksf7.quizdroid.R;
+import edu.washington.ksf7.quizdroid.Repositories.TopicRepository;
 
 public class TopicListActivity extends AppCompatActivity implements MasterDetailView.Listener {
 
     RecyclerView topicListView;
+    private static final String TAG = "TopicListActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_list);
+
+        TopicRepository.getInstance().startUpdates(this);
+        TopicRepository.getInstance().subscribe(new TopicRepository.Subscriber() {
+            @Override
+            public void onRepositoryUpdated() {
+                Log.i(TAG, "Refreshing adapter");
+                updateTopicData();
+            }
+        });
 
         initializeToolbar(getString(R.string.activity_topic_list_title));
 
@@ -32,9 +52,19 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
         initializeTopicList();
     }
 
+    @Override
+    protected void onDestroy() {
+        TopicRepository.getInstance().stopUpdates();
+        super.onDestroy();
+    }
+
     //----------------------------------------------------------------------------------------------
     // Implementation
     //----------------------------------------------------------------------------------------------
+
+    private final List<String> topicTitles = new ArrayList<>();
+    private final List<String> topicDescriptions = new ArrayList<>();
+    private RecyclerView.Adapter adapter;
 
     private void initializeToolbar(String title) {
         Toolbar toolbar = ((Toolbar) findViewById(R.id.toolbar));
@@ -55,27 +85,32 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         topicListView.setLayoutManager(layoutManager);
 
+        // Create the adapter
+        adapter = new MasterDetailView.Adapter(this, topicTitles, topicDescriptions, R.layout.quiz_topic_card, R.id.topic_title, R.id.topic_description);
+        topicListView.setAdapter(adapter);
+
         // Get the topic info to display
+        updateTopicData();
+    }
+
+    private void updateTopicData() {
+        // Get the latest topic info to display
         Topic[] topics = QuizApp.getInstance().getTopicRepository().getAllTopics();
-        String[] topicTitles;
-        String[] topicDescriptions;
 
-        if (topics == null) {
-            topicTitles = new String[0];
-            topicDescriptions = new String[0];
-        } else {
-            topicTitles = new String[topics.length];
-            topicDescriptions = new String[topics.length];
+        topicTitles.clear();
+        topicDescriptions.clear();
 
+        if (topics != null) {
             for (int i = 0; i < topics.length; i++) {
-                topicTitles[i] = topics[i].title;
-                topicDescriptions[i] = topics[i].shortDescription;
+                topicTitles.add(topics[i].title);
+                topicDescriptions.add(topics[i].shortDescription);
             }
         }
 
-        // Create the adapter
-        RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, topicTitles, topicDescriptions, R.layout.quiz_topic_card, R.id.topic_title, R.id.topic_description);
-        topicListView.setAdapter(adapter);
+        // Notify adapter that data has changed
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     //----------------------------------------------------------------------------------------------
