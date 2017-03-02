@@ -10,9 +10,14 @@
     <string name="begin_text">Begin</string>
     <string name="finish_text">Finish</string>
     <string name="submit_text">Submit</string>
+    <string name="save_text">Save</string>
 
     <string name="preferences">Preferences</string>
 
     <string name="activity_topic_list_title">Topic List</string>
     <string name="activity_quiz_title">Quiz Lyfe</string>
+
+    <!-- Labels -->
+    <string name="question_data_url_label_text">Question Data URL</string>
+    <string name="question_data_refresh_rate_label_text">Question Data Refresh Rate (minutes)</string>
 </resources>

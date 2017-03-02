@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import edu.washington.ksf7.quizdroid.Controllers.MasterDetailView;
@@ -31,20 +32,16 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
         initializeTopicList();
     }
 
+    //----------------------------------------------------------------------------------------------
+    // Implementation
+    //----------------------------------------------------------------------------------------------
+
     private void initializeToolbar(String title) {
         Toolbar toolbar = ((Toolbar) findViewById(R.id.toolbar));
         setSupportActionBar(toolbar);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.setTitle(title);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu_options_topic_list, menu);
-
-        return true;
     }
 
     private void initializeTopicList() {
@@ -79,6 +76,34 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
         // Create the adapter
         RecyclerView.Adapter adapter = new MasterDetailView.Adapter(this, topicTitles, topicDescriptions, R.layout.quiz_topic_card, R.id.topic_title, R.id.topic_description);
         topicListView.setAdapter(adapter);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // Options Menu
+    //----------------------------------------------------------------------------------------------
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater = getMenuInflater();
+        menuInflater.inflate(R.menu.menu_options_topic_list, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_preferences:
+                // Go to preferences
+                Intent intent = new Intent(this, PreferencesActivity.class);
+                startActivity(intent);
+
+                return true;
+
+            default:
+                // User action not recognized, delegate to super class
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     //----------------------------------------------------------------------------------------------
