@@ -1,6 +1,10 @@
 package edu.washington.ksf7.quizdroid.Repositories;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.widget.Toast;
@@ -26,6 +30,7 @@ public class TopicRepository {
     private static TopicRepository instance;
 
     // Config - data fetching settings
+    public static final String QUESTIONS_FILE_NAME = "questions.json";
     private static String questionDataURL = "http://tednewardsandbox.site44.com/questions.json";
     private static int questionDataRefreshRate = 5;
 
@@ -72,8 +77,8 @@ public class TopicRepository {
     public static DownloadExecutor.DownloadHandler topicsDownloadHandler = new DownloadExecutor.DownloadHandler() {
         @Override
         public void onDownloadComplete(Context context) {
-            Toast.makeText(context, "Download Complete handler called!", Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "Download Complete handler called!");
+            Toast.makeText(context, "New topics downloaded", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "New topics downloaded");
 
             // Notify subscribers that data has been updated
             for (Subscriber subscriber : subscribers) {
@@ -93,9 +98,30 @@ public class TopicRepository {
         return questionDataRefreshRate;
     }
 
-    public void startUpdates(Context context) {
+    public void startUpdates(Activity activityContext) {
+        // Make sure we have internet permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (activityContext.checkSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Permission to use the internet not yet granted, requesting...");
+
+                activityContext.requestPermissions(new String[] {
+                        Manifest.permission.INTERNET
+                }, 1);
+            }
+
+            if (activityContext.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Permission to use local storage not yet granted, requesting...");
+
+                activityContext.requestPermissions(new String[] {
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, 1);
+            }
+        } else {
+            Log.d(TAG, "Unable to manually request permission for internet and local storage use");
+        }
+
         if (!DownloadManager.questionsDataDownloadIsQueued()) {
-            DownloadManager.downloadAndQueueUpdates(context,
+            DownloadManager.downloadAndQueueUpdates(activityContext,
                     TopicRepository.questionDataURL,
                     TopicRepository.topicsDownloadHandler,
                     TopicRepository.questionDataRefreshRate);
