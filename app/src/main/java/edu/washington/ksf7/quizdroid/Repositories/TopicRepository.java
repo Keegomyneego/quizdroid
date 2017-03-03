@@ -42,6 +42,11 @@ public class TopicRepository {
     private static final String questionCorrectAnswerKey = "answer";
     private static final String questionPossibleAnswersKey = "answers";
 
+    // State
+    private static boolean downloadPaused = false;
+    private static boolean updatesPaused = false;
+    private static boolean updatesScheduled = false;
+
     // Data Fields
     private final Topic[] topics;
 
@@ -74,7 +79,7 @@ public class TopicRepository {
         return instance;
     }
 
-    public static DownloadExecutor.DownloadHandler topicsDownloadHandler = new DownloadExecutor.DownloadHandler() {
+    private static DownloadExecutor.DownloadHandler topicsDownloadHandler = new DownloadExecutor.DownloadHandler() {
         @Override
         public void onDownloadComplete(Context context) {
             Toast.makeText(context, "New topics downloaded", Toast.LENGTH_SHORT).show();
@@ -98,39 +103,58 @@ public class TopicRepository {
         return questionDataRefreshRate;
     }
 
-    public void startUpdates(Activity activityContext) {
-        // Make sure we have internet permission
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (activityContext.checkSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-                Log.i(TAG, "Permission to use the internet not yet granted, requesting...");
+    // Data Management - downloads and updates
 
-                activityContext.requestPermissions(new String[] {
-                        Manifest.permission.INTERNET
-                }, 1);
-            }
+    public void startDownloadAndScheduleUpdates(Activity activityContext) {
+        Log.d(TAG, "v -- startDownloadAndScheduleUpdates -- v");
+        // Make sure we have necessary permissions
+        ensurePermissions(activityContext);
 
-            if (activityContext.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                Log.i(TAG, "Permission to use local storage not yet granted, requesting...");
+        scheduleUpdates(activityContext);
+        startDownload(activityContext);
+        Log.d(TAG, "^ -- startDownloadAndScheduleUpdates -- ^");
+    }
 
-                activityContext.requestPermissions(new String[] {
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE
-                }, 1);
-            }
-        } else {
-            Log.d(TAG, "Unable to manually request permission for internet and local storage use");
+    public void pauseDownloads() {
+        Log.i(TAG, "Pausing all downloads");
+
+        // pause immediate download
+        downloadPaused = true;
+
+        // pause updates if they've been scheduled
+        if (updatesScheduled) {
+            updatesPaused = true;
+            stopUpdates();
+        }
+    }
+
+    public void resumeDownloads(Activity activityContext) {
+        if (DownloadManager.airplaneModeIsOn(activityContext)) {
+            // Skip resuming if airplane mode is still on
+            return;
         }
 
-        if (!DownloadManager.questionsDataDownloadIsQueued()) {
-            DownloadManager.downloadAndQueueUpdates(activityContext,
-                    TopicRepository.questionDataURL,
-                    TopicRepository.topicsDownloadHandler,
-                    TopicRepository.questionDataRefreshRate);
+        Log.i(TAG, "Resuming all downloads");
+
+        if (updatesPaused) {
+            // reschedule updates
+            scheduleUpdates(activityContext);
+        }
+
+        if (downloadPaused) {
+            // resume immediate download
+            startDownload(activityContext);
         }
     }
 
     public void stopUpdates() {
+        Log.i(TAG, "Unscheduling updates");
+
         DownloadManager.clearDownloadQueue();
+        updatesScheduled = false;
     }
+
+    // Other stuff
 
     public void setQuestionDataSettings(Context context, String url, int refreshRate) {
         questionDataURL = url;
@@ -142,6 +166,8 @@ public class TopicRepository {
     public void subscribe(Subscriber subscriber) {
         subscribers.add(subscriber);
     }
+
+    // Data Retreival
 
     @Nullable
     public Topic[] getAllTopics() {
@@ -199,5 +225,60 @@ public class TopicRepository {
         }
 
         return parsedTopics;
+    }
+
+    private void ensurePermissions(Activity activityContext) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (activityContext.checkSelfPermission(Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Permission to use the internet not yet granted, requesting...");
+
+                activityContext.requestPermissions(new String[] {
+                        Manifest.permission.INTERNET
+                }, 1);
+            }
+
+            if (activityContext.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Permission to use local storage not yet granted, requesting...");
+
+                activityContext.requestPermissions(new String[] {
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE
+                }, 1);
+            }
+
+            if (activityContext.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
+                Log.i(TAG, "Permission to check internet connectivity not yet granted, requesting...");
+
+                activityContext.requestPermissions(new String[] {
+                        Manifest.permission.ACCESS_NETWORK_STATE
+                }, 1);
+            }
+        } else {
+            Log.d(TAG, "Unable to manually request permission for internet and local storage use");
+        }
+    }
+
+    private void startDownload(Activity activityContext) {
+
+        Log.i(TAG, "Starting immediate download");
+        downloadPaused = false;
+
+        DownloadManager.download(activityContext,
+                TopicRepository.questionDataURL,
+                TopicRepository.topicsDownloadHandler);
+    }
+
+    private void scheduleUpdates(Activity activityContext) {
+
+        if (!updatesScheduled) {
+            Log.i(TAG, "Scheduling updates");
+
+            updatesPaused = false;
+            updatesScheduled = true;
+
+            DownloadManager.queueUpdates(activityContext,
+                    TopicRepository.questionDataURL,
+                    TopicRepository.topicsDownloadHandler,
+                    TopicRepository.questionDataRefreshRate);
+        }
     }
 }

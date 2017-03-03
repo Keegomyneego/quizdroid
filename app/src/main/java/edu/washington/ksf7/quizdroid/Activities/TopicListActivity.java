@@ -37,7 +37,7 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topic_list);
 
-        TopicRepository.getInstance().startUpdates(this);
+        TopicRepository.getInstance().startDownloadAndScheduleUpdates(this);
         TopicRepository.getInstance().subscribe(new TopicRepository.Subscriber() {
             @Override
             public void onRepositoryUpdated() {
@@ -50,6 +50,13 @@ public class TopicListActivity extends AppCompatActivity implements MasterDetail
 
         // Bind the view to the data
         initializeTopicList();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.i(TAG, "Resuming activity...");
+        super.onResume();
+        TopicRepository.getInstance().resumeDownloads(this);
     }
 
     @Override

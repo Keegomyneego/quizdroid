@@ -1,13 +1,16 @@
 package edu.washington.ksf7.quizdroid.BroadcastReceivers;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,6 +23,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import edu.washington.ksf7.quizdroid.Controllers.DownloadManager;
 import edu.washington.ksf7.quizdroid.Repositories.TopicRepository;
 
 public class DownloadExecutor extends BroadcastReceiver {
@@ -50,7 +54,30 @@ public class DownloadExecutor extends BroadcastReceiver {
 
     public static void downloadImmediately(final Context context, String url, final DownloadHandler handler) {
 
+        // Check for internet
+        if (!DownloadManager.hasInternetConnection(context)) {
+            // Check for airplane mode
+            if (DownloadManager.airplaneModeIsOn(context)) {
+                Toast.makeText(context, "Unable to start download, airplane mode is enabled", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "Unable to start download, airplane mode is enabled");
+
+                Log.i(TAG, "Airplane mode detected");
+                DownloadManager.promptUserToDisableAirplaneMode(context);
+
+                // Punt all downloads until we get disable airplane mode
+                TopicRepository.getInstance().pauseDownloads();
+                return;
+            } else {
+                Toast.makeText(context, "Unable to start download, device is offline. Will try again soon.", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "Unable to start download, device is offline. Will try again soon.");
+
+                // Just skip the current download
+                return;
+            }
+        }
+
         Toast.makeText(context, "Beginning download from " + url, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, "Beginning download from " + url);
 
         // Call handler after download completes
         FileDownload download = new FileDownload() {
@@ -66,6 +93,10 @@ public class DownloadExecutor extends BroadcastReceiver {
 
         // Handle results
         handler.onDownloadComplete(context);
+    }
+
+    public static void appResumed() {
+
     }
 
     //----------------------------------------------------------------------------------------------

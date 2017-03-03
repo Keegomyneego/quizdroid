@@ -2,10 +2,18 @@ package edu.washington.ksf7.quizdroid.Controllers;
 
 import android.app.Activity;
 import android.app.AlarmManager;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.SystemClock;
+import android.provider.Settings;
 import android.util.Log;
+import android.widget.Toast;
 
 import edu.washington.ksf7.quizdroid.BroadcastReceivers.DownloadExecutor;
 
@@ -19,16 +27,6 @@ public class DownloadManager {
 
     private static AlarmManager alarmManager;
     private static PendingIntent downloadQuestionsData;
-    private static boolean questionsDataDownloadIsQueued = false;
-
-    /**
-     * Downloads immediately and queues repeated downloads in the future.
-     * @param updateInterval number of minutes before initiating another download. Does nothing if < 1
-     */
-    public static void downloadAndQueueUpdates(Context context, String url, DownloadExecutor.DownloadHandler downloadHandler, int updateInterval) {
-        download(context, url, downloadHandler);
-        queueUpdates(context, url, downloadHandler, updateInterval);
-    }
 
     /**
      * Downloads immediately
@@ -59,8 +57,6 @@ public class DownloadManager {
                     SystemClock.elapsedRealtime() + intervalMillis,
                     intervalMillis,
                     downloadQuestionsData);
-
-            questionsDataDownloadIsQueued = true;
         }
     }
 
@@ -74,10 +70,51 @@ public class DownloadManager {
         Log.i(TAG, "cancelling all queued downloads");
 
         alarmManager.cancel(downloadQuestionsData);
-        questionsDataDownloadIsQueued = false;
     }
 
-    public static boolean questionsDataDownloadIsQueued() {
-        return questionsDataDownloadIsQueued;
+    // Connectivity Methods
+
+    public static void promptUserToDisableAirplaneMode(final Context context) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle("Airplane Mode Detected");
+        alertDialog.setMessage("An internet connection is required to download topic data, would you like to disable airplane mode?");
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No thanks", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes please", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(Settings.ACTION_AIRPLANE_MODE_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
+    public static boolean hasInternetConnection(Context context) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = connectivityManager.getActiveNetworkInfo();
+
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
+    }
+
+    public static boolean airplaneModeIsOn(Context context) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                return Settings.Global.getInt(context.getContentResolver(), Settings.Global.AIRPLANE_MODE_ON) != 0;
+            } else {
+                Log.e(TAG, "This device doesn't support checking if airplane mode is on");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Unable to determine if airplane mod is on: " + e);
+        }
+
+        return false;
     }
 }
