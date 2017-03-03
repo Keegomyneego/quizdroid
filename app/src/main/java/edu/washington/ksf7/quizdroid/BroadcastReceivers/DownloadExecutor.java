@@ -52,7 +52,7 @@ public class DownloadExecutor extends BroadcastReceiver {
         return PendingIntent.getBroadcast(context, 0, downloadIntent, 0);
     }
 
-    public static void downloadImmediately(final Context context, String url, final DownloadHandler handler) {
+    public static void downloadImmediately(final Context context, final String url, final DownloadHandler handler) {
 
         // Check for internet
         if (!DownloadManager.hasInternetConnection(context)) {
@@ -68,10 +68,17 @@ public class DownloadExecutor extends BroadcastReceiver {
                 TopicRepository.getInstance().pauseDownloads();
                 return;
             } else {
-                Toast.makeText(context, "Unable to start download, device is offline. Will try again soon.", Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "Unable to start download, device is offline. Will try again soon.");
+                Toast.makeText(context, "Unable to start download, device is offline", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "Unable to start download, device is offline");
 
-                // Just skip the current download
+                // Prompt the user to retry
+                DownloadManager.promptUserToRetryDownload(context, "topic data", new Runnable() {
+                    @Override
+                    public void run() {
+                        downloadImmediately(context, url, handler);
+                    }
+                });
+
                 return;
             }
         }

@@ -96,6 +96,26 @@ public class DownloadManager {
         alertDialog.show();
     }
 
+    public static void promptUserToRetryDownload(final Context context, String contentDescription, final Runnable positiveButtonClickAction) {
+        final AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle("No Internet Connection");
+        alertDialog.setMessage("An attempt to download " + contentDescription + ", would you like to try again?");
+        alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "No thanks", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "Yes please", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                positiveButtonClickAction.run();
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog.show();
+    }
+
     public static boolean hasInternetConnection(Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
